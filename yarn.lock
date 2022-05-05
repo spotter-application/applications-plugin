@@ -41,19 +41,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@spotter-app/core@^2.0.0-beta.51":
-  version "2.0.0-beta.51"
-  resolved "https://registry.yarnpkg.com/@spotter-app/core/-/core-2.0.0-beta.51.tgz#035ecd3001721907477f5af3b6ba193c8802337b"
-  integrity sha512-omYcHymOdi/Y0mUbhvV/OiAuz2iORdofS/BuIPxDFluHJQQrTlwRKMIJsY3Qru8XeZQaxlOLF4hwHIKi9uanQw==
+"@spotter-app/core@^2.0.0-beta.63":
+  version "2.0.0-beta.63"
+  resolved "https://registry.yarnpkg.com/@spotter-app/core/-/core-2.0.0-beta.63.tgz#36ec1b47f4bafc3aea4befd6f7178257e8e346b0"
+  integrity sha512-0akVvEBj/wk3QYlTzgj04PC9E2nJwRERT3pWctOnXzQOJniq9Hqz2Eur9mjIvk/hc8Jbac+KCvIjW1fFXiThAg==
   dependencies:
     rxjs "^7.5.5"
 
-"@spotter-app/plugin@^2.0.0-beta.51":
-  version "2.0.0-beta.51"
-  resolved "https://registry.yarnpkg.com/@spotter-app/plugin/-/plugin-2.0.0-beta.51.tgz#2e1514081442b26d3c2c5b077c03d292f29d2b15"
-  integrity sha512-OF7U9uzFvX9Si9BUoIF/zQaryiMkmgyvFwfaQriRsiF3kmmHiycrtKMB/LITXU3GZUw7dLDcCxzSN4PnrAsZsw==
+"@spotter-app/plugin@^2.0.0-beta.63":
+  version "2.0.0-beta.63"
+  resolved "https://registry.yarnpkg.com/@spotter-app/plugin/-/plugin-2.0.0-beta.63.tgz#c938f5d416e307c76e8ca6bc3e2f1ed2951fc36a"
+  integrity sha512-TTQQ98x8zcS6Cxt70B/iOCJ0ufBGQTMMwK4EUK3+ewApJMJXjPkk+fUYx2E3yh5A8kzZLaeY9cujUOoz6XBGvA==
   dependencies:
-    "@spotter-app/core" "^2.0.0-beta.51"
+    "@spotter-app/core" "^2.0.0-beta.63"
     "@types/ws" "^8.5.3"
     ws "^8.5.0"
 

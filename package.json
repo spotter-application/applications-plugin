@@ -1,19 +1,19 @@
 {
   "name": "@spotter-app/applications-plugin",
-  "version": "1.11.2-beta.1",
+  "version": "1.11.2-beta.2",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
   "scripts": {
     "start": "tsc-watch --onSuccess \"node ./dist/index.js\"",
-    "build": "tsc && pkg package.json"
+    "build": "tsc && pkg package.json && cd dist && zip plugin.zip applications-plugin"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@spotter-app/plugin": "^2.0.0-beta.51",
+    "@spotter-app/plugin": "^2.0.0-beta.63",
     "@types/node": "^17.0.29",
     "pkg": "^5.6.0",
     "tsc-watch": "^5.0.3",

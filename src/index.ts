@@ -1,19 +1,10 @@
-import { Plugin, RegistryOption, onQueryFilter } from '@spotter-app/plugin';
+import { SpotterPlugin, RegistryOption, onQueryFilter } from '@spotter-app/plugin';
 import { exec } from 'child_process';
 import { ADDITIONAL_ACTIONS, PREFERENCES } from './constants';
 import { getAllApplications } from './helpers';
 import { ActionType } from './interfaces';
 
-new class ApplicationsPlugin extends Plugin {
-
-  constructor() {
-    super({
-      // name: packageJSON.name,
-      name: 'Applications plugin',
-      icon: '🗂️',
-      // version: packageJSON.version,
-    });
-  }
+new class ApplicationsPlugin extends SpotterPlugin {
 
   async onInit() {
     const applications = await getAllApplications();
