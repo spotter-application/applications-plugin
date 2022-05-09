@@ -32,6 +32,10 @@ export const getAllApplications = async (): Promise<Application[]> => {
 }
 
 async function getDeepApplications(path: string): Promise<Application[]> {
+  if (!path) {
+    return [];
+  }
+
   if (path.startsWith('~')) {
     const user = await promisedExec('echo $USER');
     path = path.replace('~', `/Users/${user}`);
