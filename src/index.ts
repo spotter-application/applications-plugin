@@ -2,22 +2,12 @@
 
 import util from 'util';
 import { exec } from 'child_process';
-import os from 'os';
 const asyncExec = util.promisify(exec);
 // import { SpotterPlugin, Option } from '@spotter-app/core';
 
 
 import WebSocket from 'websocket';
-
-async function asyncFindAndMap<T>(
-  array: T[],
-  asyncCallback: (item: T) => Promise<T>,
-) {
-  const promises = array.map(asyncCallback);
-  const results = await Promise.all(promises);
-  const index = results.findIndex(result => result);
-  return results[index];
-}
+import { getApplications } from './helpers';
 
 export interface Option {
   name: string;
@@ -208,95 +198,32 @@ new class Applications extends SpotterPlugin {
     super();
     this.init();
   }
-  
+
   public async init() {
-    const { stdout } = await asyncExec('ls /usr/share/applications | awk -F ".desktop" " { print \$1}" -');
-    this.options = await Promise.all(stdout.split('\n').filter(a => !!a).map(async a => {
-      const { stdout } = await asyncExec(`cat /usr/share/applications/${a}`);
-      const execCommandLine = stdout.split('\n').find(line => line.startsWith('Exec='));
-      const execCommand = execCommandLine?.replace('Exec=', '').split(' ')[0] ?? '';
+    this.options = await getApplications();
 
-      const nameLine = stdout.split('\n').find(line => line.startsWith('Name='));
-      const name = nameLine?.replace('Name=', '') ?? '';
+    // this.options = await Promise.all(stdout.split('\n').filter(a => !!a).map(async a => {
+    //   const { stdout } = await asyncExec(`cat /usr/share/applications/${a}`);
+    //   const execCommandLine = stdout.split('\n').find(line => line.startsWith('Exec='));
+    //   const execCommand = execCommandLine?.replace('Exec=', '').split(' ')[0] ?? '';
 
-      const iconLine = stdout.split('\n').find(line => line.startsWith('Icon='));
-      const iconName = iconLine?.replace('Icon=', '') ?? '';
-      const icon = (await this.findIconPath(iconName)) ?? undefined;
+    //   const nameLine = stdout.split('\n').find(line => line.startsWith('Name='));
+    //   const name = nameLine?.replace('Name=', '') ?? '';
 
-      return {
-        name,
-        icon,
-        action: () => this.openApplication(execCommand),
-      }
-    }));
+    //   const iconLine = stdout.split('\n').find(line => line.startsWith('Icon='));
+    //   const iconName = iconLine?.replace('Icon=', '') ?? '';
+    //   const icon = (await this.findIconPath(iconName)) ?? undefined;
+
+    //   return {
+    //     name,
+    //     icon,
+    //     action: () => this.openApplication(execCommand),
+    //   }
+    // }));
   }
 
   public onQuery(query: string): Option[] {
     return this.options.filter(o => o.name.toLowerCase().includes(query.toLowerCase()));
   }
-
-  private async findIconPath(icon: string): Promise<string | null> {
-    if (icon.split('/').length > 1) {
-      return icon;
-    }
-
-    const paths: string[] = [
-      '/usr/share/icons/hicolor/64x64/apps',
-      '/usr/share/icons/Papirus/64x64/apps',
-      '/usr/share/icons/Adwaita/64x64/places',
-      '/usr/share/icons/Adwaita/22x22/places',
-      '/usr/share/pixmaps',
-    ];
-
-    const formats: string[] = [
-      '.svg',
-      '.png',
-    ];
-
-    const path = await asyncFindAndMap<string | null>(paths, async (path) => {
-      const format = await asyncFindAndMap<string | null>(formats, async (format) => {
-        const result = (await asyncExec(`
-          if [ -e "${path}/${icon}${format}" ]; then echo '1'; else echo '0'; fi
-        `)).stdout === '1\n';
-        return result ? format : null;
-      });
-      return format ? `${path}/${icon}${format}` : null;
-    });
-
-    if (!path) {
-      return null;
-    }
-    
-    return path;
-  }
-
-  private async openApplication(app: string) {
-    try {
-      const appPathArr = app.split('/');
-      const appName = appPathArr[appPathArr.length - 1];
-      
-      // TODO: implement focus app on tab hotkey instead
-      const appsToReopen = ['alacritty'];
-      const { stdout } = await asyncExec(`pgrep -f ${appName} | head -n 1`);
-
-      if (!stdout || appsToReopen.includes(appName)) {
-        await asyncExec(`nohup ${app} </dev/null >/dev/null 2>&1 &`);
-        return true;
-      }
-
-      await asyncExec(`swaymsg "[pid=${stdout.replace('\n', '')}] focus";`).catch(async () => {
-        await asyncExec(`nohup ${app} </dev/null >/dev/null 2>&1 &`);
-        return null;
-      });
-      
-
-
-      return true;
-    } catch (error) {
-      console.log(error);
-      return true;
-    }
-  }
-
 }
 
