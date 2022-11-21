@@ -57,22 +57,24 @@ const getLinuxApplications = async (): Promise<Application[]> => {
 
 const openLinuxApplication = async (app: string) => {
   try {
-    const appPathArr = app.split('/');
-    const appName = appPathArr[appPathArr.length - 1];
+    // const appPathArr = app.split('/');
+    // const appName = appPathArr[appPathArr.length - 1];
+
+    await asyncExec(`nohup "${app}" </dev/null >/dev/null 2>&1 &`);
 
     // TODO: implement focus app on tab hotkey instead
-    const appsToReopen = ['alacritty'];
-    const res = await asyncExec(`pgrep -f ${appName} | head -n 1`);
+    // const appsToReopen = ['alacritty'];
+    // const res = await asyncExec(`pgrep -f ${appName} | head -n 1`);
 
-    if (!res || appsToReopen.includes(appName)) {
-      await asyncExec(`nohup ${app} </dev/null >/dev/null 2>&1 &`);
-      return true;
-    }
+    // if (!res || appsToReopen.includes(appName)) {
+    //   await asyncExec(`nohup ${app} </dev/null >/dev/null 2>&1 &`);
+    //   return true;
+    // }
 
-    await asyncExec(`swaymsg "[pid=${res.replace('\n', '')}] focus";`).catch(async () => {
-      await asyncExec(`nohup ${app} </dev/null >/dev/null 2>&1 &`);
-      return null;
-    });
+    // await asyncExec(`swaymsg "[pid=${res.replace('\n', '')}] focus";`).catch(async () => {
+    //   await asyncExec(`nohup ${app} </dev/null >/dev/null 2>&1 &`);
+    //   return null;
+    // });
 
     return true;
   } catch (error) {
