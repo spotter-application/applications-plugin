@@ -40,10 +40,8 @@ const getLinuxApplications = async (): Promise<Application[]> => {
     const execCommandLine = res.split('\n').find(line => line.startsWith('Exec=')) ?? '';
     const execCommand = execCommandLine
       .replace('Exec=', '')
-      .replace('%U', '')
-      .replace('%u', '')
-      .replace('%F', '')
-      .replace('%f', '')
+      .replace(/ *\%[^)]*\ */g, '') // %args
+      .replace(/ *\ -[^)]*\ */g, '') // -args
       .replace(/"/g, '')
       .trim();
 
@@ -55,7 +53,7 @@ const getLinuxApplications = async (): Promise<Application[]> => {
     const icon = (await findLinuxIconPath(iconName)) ?? undefined;
 
     return {
-      name: name + 'test',
+      name,
       action: () => openLinuxApplication(execCommand),
       icon: icon,
     }
@@ -63,6 +61,7 @@ const getLinuxApplications = async (): Promise<Application[]> => {
 };
 
 const openLinuxApplication = async (app: string) => {
+  console.log(`nohup "${app}" </dev/null >/dev/null 2>&1 &`);
   try {
     // const appPathArr = app.split('/');
     // const appName = appPathArr[appPathArr.length - 1];
