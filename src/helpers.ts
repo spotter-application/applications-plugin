@@ -37,8 +37,15 @@ const getLinuxApplications = async (): Promise<Application[]> => {
   const result = await asyncExec('ls /usr/share/applications | awk -F ".desktop" " { print \$1}" -');
   return await Promise.all(result.split('\n').filter(a => !!a).map(async a => {
     const res = await asyncExec(`cat /usr/share/applications/${a}`);
-    const execCommandLine = res.split('\n').find(line => line.startsWith('Exec='));
-    const execCommand = execCommandLine?.replace('Exec=', '').split(' ')[0] ?? '';
+    const execCommandLine = res.split('\n').find(line => line.startsWith('Exec=')) ?? '';
+    const execCommand = execCommandLine
+      .replace('Exec=', '')
+      .replace('%U', '')
+      .replace('%u', '')
+      .replace('%F', '')
+      .replace('%f', '')
+      .replaceAll('"', '')
+      .trim();
 
     const nameLine = res.split('\n').find(line => line.startsWith('Name='));
     const name = nameLine?.replace('Name=', '') ?? '';
@@ -48,7 +55,7 @@ const getLinuxApplications = async (): Promise<Application[]> => {
     const icon = (await findLinuxIconPath(iconName)) ?? undefined;
 
     return {
-      name,
+      name: name + 'test',
       action: () => openLinuxApplication(execCommand),
       icon: icon,
     }
