@@ -44,7 +44,7 @@ const getLinuxApplications = async (): Promise<Application[]> => {
       .replace('%u', '')
       .replace('%F', '')
       .replace('%f', '')
-      .replaceAll('"', '')
+      .replace(/"/g, '')
       .trim();
 
     const nameLine = res.split('\n').find(line => line.startsWith('Name='));
