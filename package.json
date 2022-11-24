@@ -26,6 +26,7 @@
   "license": "ISC",
   "devDependencies": {
     "@spotter-app/core": "^2.0.2",
+    "@types/command-line-args": "^5.2.0",
     "@types/node": "^18.11.9",
     "@types/websocket": "^1.0.5",
     "bufferutil": "^4.0.7",
@@ -47,6 +48,7 @@
   },
   "dependencies": {
     "@types/ws": "^8.5.3",
+    "command-line-args": "^5.2.1",
     "ws": "^8.10.0"
   }
 }
