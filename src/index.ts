@@ -141,7 +141,12 @@ export class SpotterPlugin {
 
   private async connect(): Promise<WebSocket.connection> {
     const port = this.commandLineArgs[COMMAND_LINE_ARG_WEB_SOCKET_PORT] ?? '4040';
+    this.client.on('connectFailed', (error) => {
+      console.error(error);
+    });
+
     this.client.connect(`ws://0.0.0.0:${port}`);
+
     return new Promise(resolve => {
       this.client.on('connect', (cl) => {
         resolve(cl);
@@ -173,10 +178,6 @@ export class SpotterPlugin {
         const request: MessageFromSpotter = JSON.parse(msg.utf8Data);
         this.spotterHandleRequest(request);
       }
-    });
-
-    this.client.on('connectFailed', (reason) => {
-      console.log('connectFailed: ', reason);
     });
   }
 
