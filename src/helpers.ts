@@ -161,10 +161,10 @@ export const getMacOSApplications = async (): Promise<Application[]> => {
   const appPaths = allApps.map(a => a.fullPath?.replace('\n', '') as string);
   const buffers4 = await fileIconToBuffer(appPaths, { size: 64 });
 
-  const iconsDir = `${__dirname}/mac-icons`;
-  if (!fs.existsSync(iconsDir)){
-    fs.mkdirSync(iconsDir);
-  }
+  const iconsDir = process.cwd();
+  // if (!fs.existsSync(iconsDir)){
+  //   fs.mkdirSync(iconsDir);
+  // }
   buffers4.map((buffer: any, index: any) => fs.writeFileSync(`${iconsDir}/${allApps[index].name.replace(/\s+/g, '-')}.png`, buffer));
   
   return allApps.map((app) => ({
