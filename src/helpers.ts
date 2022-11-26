@@ -1,6 +1,8 @@
 import util from 'util';
 import { exec } from 'child_process';
 import os from 'os';
+import fs from 'node:fs';
+import { fileIconToBuffer } from 'file-icon';
 
 const asyncExec: (command: string) => Promise<string> = (command) => {
   return new Promise(async (resolve) => {
@@ -23,6 +25,7 @@ export interface Application {
   name: string,
   icon?: string,
   action: () => Promise<boolean>,
+  fullPath?: string,
 }
 
 export const getApplications = async (): Promise<Application[]> => {
@@ -146,13 +149,28 @@ export const getMacOSApplications = async (): Promise<Application[]> => {
     Promise.resolve([]),
   );
 
-  return [
+  const allApps = [
     ...applications.filter(a => a.name !== 'System Preferences'),
     {
       name: 'Finder',
+      fullPath: '/System/Library/CoreServices/Finder.app',
       action: () => openMacOsApplication('/System/Library/CoreServices/Finder.app'),
     }
   ];
+
+  const appPaths = allApps.map(a => a.fullPath?.replace('\n', '') as string);
+  const buffers4 = await fileIconToBuffer(appPaths, { size: 64 });
+
+  const iconsDir = `${__dirname}/mac-icons`;
+  if (!fs.existsSync(iconsDir)){
+    fs.mkdirSync(iconsDir);
+  }
+  buffers4.map((buffer: any, index: any) => fs.writeFileSync(`${iconsDir}/${allApps[index].name.replace(/\s+/g, '-')}.png`, buffer));
+  
+  return allApps.map((app) => ({
+    ...app,
+    icon: `${iconsDir}/${app.name.replace(/\s+/g, '-')}.png`,
+  }));
 }
 
 const openMacOsApplication = (app: string): Promise<boolean> => {
@@ -183,6 +201,7 @@ async function getDeepMacOSApplications(path: string): Promise<Application[]> {
           ...resolvedAcc,
           {
             name: title.replace('.app', ''),
+            fullPath: `${path}/${title}`,
             action: () => openMacOsApplication(`${path}/${title}`),
           },
         ];

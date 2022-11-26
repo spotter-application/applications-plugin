@@ -49,6 +49,7 @@
   "dependencies": {
     "@types/ws": "^8.5.3",
     "command-line-args": "^5.2.1",
+    "file-icon": "^5.1.0",
     "ws": "^8.10.0"
   }
 }
